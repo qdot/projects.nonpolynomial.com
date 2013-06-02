@@ -15,7 +15,7 @@ FTP_TARGET_DIR=/
 SSH_HOST=nonpolynomial.com
 SSH_PORT=22
 SSH_USER=npweb
-SSH_TARGET_DIR=~/pelican.nonpolynomial.com
+SSH_TARGET_DIR=~/projects.nonpolynomial.com
 
 S3_BUCKET=my_s3_bucket
 
