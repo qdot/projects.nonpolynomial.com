@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} {{ SITENAME }} {% endblock %}
+{% block menu %}
+{% endblock %}
+{% macro projectboxes(type) %}
+<div class="np-project-type-header"><h1>{{ type|title }}</h1></div>
+{% for project in articles %}
+{% if project.category == type %}
+<A HREF='{{project.slug}}'>
+<div class="np-project-box" style="background-image: url('/static/images/{{project.slug}}-small.jpg')">
+  <div class="np-project-box-title">
+    <p>{{project.title}}</p>
+    <p>{{project.date.strftime("%Y")}}</p>
+  </div>
+  <div class="np-project-box-description">
+    <p>{{project.description}}</p>
+  </div>
+</div>
+</A>
+{% endif %}
+{% endfor %}
+{% endmacro %}
+
+{% block content %}
+{{ projectboxes("projects") }}
+{{ projectboxes("professional") }}
+{{ projectboxes("web") }}
+{{ projectboxes("software") }}
+{% endblock %}

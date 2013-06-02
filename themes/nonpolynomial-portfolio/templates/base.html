@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+  {% block head %}
+  <head>
+    <title>{% block title %}{{ SITENAME }}{%endblock%}</title>
+    <link type="text/css" rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="{{ SITEURL }}/theme/css/pygments_friendly.css" />
+    <link rel="alternate" type="application/rss+xml" href="http://feeds.feedburner.com/nonpolynomiallabs" title="Nonpolynomial Labs RSS Feed" /> 
+    <link rel="alternate" type="application/atom+xml" href="http://feeds.feedburner.com/nonpolynomiallabs" title="Nonpolynomial Labs RSS (Atom) Feed" /> 
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans&v1' rel='stylesheet' type='text/css' />
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      {% block piwikdoctitle %} 
+      _paq.push(["setDocumentTitle", document.domain + "/" + document.title]); 
+      {% endblock %}
+      _paq.push(["setCookieDomain", "*.nonpolynomial.com"]);
+      _paq.push(["trackPageView"]);
+      _paq.push(["enableLinkTracking"]);
+
+      (function() {
+        var u=(("https:" == document.location.protocol) ? "https" : "http") + "://apps.nonpolynomial.com/piwik/";
+        _paq.push(["setTrackerUrl", u+"piwik.php"]);
+        _paq.push(["setSiteId", "2"]);
+        var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+        g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+  </head>
+  {% endblock %}
+  <body>
+    <div class="np-page">
+      <div class="np-header">
+	<div class="np-header-top">
+	  <div class="np-header-top-left">
+	    <div class="np-header-top-title"><A HREF='/'><IMG SRC="/theme/images/nptitle.png" /></A></div>
+	    <div class="np-header-top-menu-link"><A HREF='/'>Blog</A></div>
+	    <div class="np-header-top-menu-link"><A HREF='/about'>About</A></div>
+	    <div class="np-header-top-menu-link"><A HREF='/projects'>Projects</A></div>
+	    <div class="np-header-top-icon"><A HREF='http://www.linkedin.com/in/kylemachulis'><IMG SRC='/theme/images/LinkedIn-16x16.png' /></A></div>
+	    <div class="np-header-top-icon"><A HREF='http://github.com/qdot'><IMG SRC='/theme/images/Github-16x16.jpg' /></A></div>
+	    <div class="np-header-top-icon"><A HREF='http://gplus.to/qdot'><IMG SRC='/theme/images/Plus-16x16.png' /></A></div>
+	    <div class="np-header-top-icon"><A HREF='http://www.twitter.com/qdot'><IMG SRC='/theme/images/Twitter-16x16.png' /></A></div>
+	    <div class="np-header-top-icon"><A HREF='http://feeds.feedburner.com/nonpolynomiallabs'><IMG SRC='/theme/images/rss-16x16.png' /></A></div>
+	  </div>
+	  <div class="np-header-right"><IMG SRC='/theme/images/npcurve.jpg' /></div>
+	  <div class="np-header-top-vert-line"><!-- --></div>
+	</div>
+	<div class="np-header-line">
+	  <div class="np-header-line-left-cap"><!-- --></div>
+	  <div class="np-header-line-center"><!-- --></div>
+	  <div class="np-header-line-right-cap"><!-- --></div>
+	</div>	
+	<div class="np-header-bottom">
+	  <div class="np-header-bottom-left">
+	    <div class="np-header-bottom-menu">
+	      {% block menu %}
+	      {% endblock %}
+	    </div>
+	  </div>
+	  <div class="np-header-right"></div>
+	  <div class="np-header-line-lower-cap"></div>
+	</div>
+      </div>
+      <div class="np-content">	
+	{% block content %}
+	{% endblock %}
+      </div>
+      <div class="np-header-line">
+	<div class="np-header-line-left-cap"><!-- --></div>
+	<div class="np-header-line-center"><!-- --></div>
+	<div class="np-header-line-right-cap"><!-- --></div>
+      </div>	
+      <div class="np-footer">
+	Copyright Kyle Machulis/Nonpolynomial Labs 2004-2013
+      </div>
+    </div>
+    <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+    <script type="text/javascript"> _uacct = "UA-1413101-3";urchinTracker(); </script>
+  </body>
+</html>
