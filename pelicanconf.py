@@ -36,7 +36,9 @@ YEAR_ARCHIVE_SAVE_AS = None
 # Uncomment following line if you want document-relative URLs when developing
 RELATIVE_URLS = True
 
-# TEMPLATE_PAGES = {'templates/404.html': "404/index.html"}
+TEMPLATE_PAGES = {'templates/404.html': "404/index.html"}
+
+FILES_TO_COPY = (('extras/htaccess', '.htaccess'),)
 
 DIRECT_TEMPLATES = ['index']
 
