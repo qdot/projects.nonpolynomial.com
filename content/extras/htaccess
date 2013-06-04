@@ -1,2 +1,6 @@
 Options -Indexes
 ErrorDocument 404 /404/index.html
+
+RewriteEngine On
+
+RewriteRule ^.*article/(.*).jpg$ http://projects.nonpolynomial.com/static/images/$1.jpg [R,L]
