@@ -275,7 +275,8 @@ body {
     width: 95%;
     margin-right: auto;
     margin-left: auto;
-    padding-top:20px;
+    padding-top: 20px;
+    font-family: 'Droid Sans', arial, serif;
 }
 
 /********************************************************
@@ -286,6 +287,20 @@ body {
     width: 95%;
     margin: 0px auto;
     clear: both;
+}
+
+/* Hide h2's, as they're usually top level node descriptors we don't */
+/* care about. */
+.np-project-content h2 {
+    visibility: hidden;
+    display: none;
+}
+
+.np-project-content h3 {
+    font-size: 13pt;
+    font-style: bold;
+    margin: 0px;
+    margin-top: 5px;
 }
 
 .np-project-title-image {
@@ -374,11 +389,11 @@ body {
 
 .np-project-sidebar {
     float: left;
-    font-size: 9pt;
+    font-size: 10pt;
     border-right: 1px solid #000;
     margin-right: 10px;
     padding-right: 10px;
-    width: 22%;
+    width: 27%;
 }
 
 .np-project-sidebar a {
@@ -391,42 +406,6 @@ body {
     text-decoration: underline;
 }
 
-.np-project-list {
-    float: left;
-    font-size: 9pt;
-    border-right: 1px solid #000;
-    margin-right: 10px;
-    padding-right: 10px;
-    width: 22%;
-}
-
-.np-library-list {
-    float: left;
-    font-size: 9pt;
-    border-right: 1px solid #000;
-    margin-right: 10px;
-    padding-right: 10px;
-    width: 22%;
-}
-
-.np-project-sidebar p {
-    padding-left: 15px;
-}
-
-.np-project-sidebar h2 {
-    font-size: 15pt;
-    font-style: bold;
-    margin: 0px;
-    margin-top: 5px;
-}
-
-.np-project-sidebar h3 {
-    font-size: 10pt;
-    font-style: bold;
-    margin: 0px;
-    margin-top: 5px;
-}
-
 .np-project-sidebar p {
     margin-top: .5em;
     margin-bottom: .5em;
@@ -436,7 +415,7 @@ body {
 .np-project-sidebar ul {
     margin-top: .5em;
     margin-bottom: .5em;
-    list-style:none;
+    list-style: none;
     padding-left: 1em;
 }
 
@@ -446,8 +425,11 @@ body {
 
 .np-project-description {
     float: left;
-    font-size: 10pt;
-    width: 75%;
+    font-size: 11pt;
+    width: 70%;
+    padding-top: 0px;
+    margin-top: 0px;
+    
 }
 
 .np-project-box-row a {
@@ -455,8 +437,6 @@ body {
 }
 
 .np-project-description h2 {
-    padding-top: 0px;
-    margin-top: 5px;
 }
 
 .np-project-description iframe {
@@ -465,25 +445,6 @@ body {
     margin-right: auto;
     margin-bottom: 10px;
     margin-top: 10px;
-}
-
-.np-library-box-title {
-    position: absolute;
-    width: 100%;
-    height: 30px;
-    vertical-align: top;
-    padding: 0px;
-    margin:0px;
-    background: #000;
-    color: #fff;
-    font-size: 9pt;
-    font-family: 'Droid Sans', arial, serif;
-}
-
-.np-library-box-title p {
-    padding-left: 5px;
-    line-spacing: 100%;
-    margin: 0px;
 }
 
 .np-project-type {

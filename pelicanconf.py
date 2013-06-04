@@ -38,7 +38,7 @@ RELATIVE_URLS = True
 
 TEMPLATE_PAGES = {'templates/404.html': "404/index.html"}
 
-FILES_TO_COPY = (('extras/htaccess', '.htaccess'),)
+FILES_TO_COPY = [('extras/htaccess', '.htaccess')]
 
 DIRECT_TEMPLATES = ['index']
 

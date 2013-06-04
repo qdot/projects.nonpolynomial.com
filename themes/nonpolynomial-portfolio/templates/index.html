@@ -3,10 +3,11 @@
 {% block menu %}
 {% endblock %}
 {% macro projectboxes(type) %}
+<a name='{{type}}'></a>
 <div class="np-project-type-header"><h1>{{ type|title }}</h1></div>
 {% for project in articles %}
 {% if project.category == type %}
-<A HREF='{{project.slug}}'>
+<a href='{{project.slug}}'>
 <div class="np-project-box" style="background-image: url('/static/images/{{project.slug}}-small.jpg')">
   <div class="np-project-box-title">
     <p>{{project.title}}</p>
@@ -16,7 +17,7 @@
     <p>{{project.description}}</p>
   </div>
 </div>
-</A>
+</a>
 {% endif %}
 {% endfor %}
 {% endmacro %}
