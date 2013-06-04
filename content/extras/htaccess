@@ -3,4 +3,6 @@ ErrorDocument 404 /404/index.html
 
 RewriteEngine On
 
-RewriteRule ^.*article/(.*).jpg$ http://projects.nonpolynomial.com/static/images/$1.jpg [R,L]
+# Catchall rules for articles with images until pelican fixes static file distribution
+RewriteRule ^.*-images/(.*).(jpg|png)$ http://projects.nonpolynomial.com/static/images/$1.$2 [R,L]
+RewriteRule ^.*article/(.*).(jpg|png)$ http://projects.nonpolynomial.com/static/images/$1.$2 [R,L]
