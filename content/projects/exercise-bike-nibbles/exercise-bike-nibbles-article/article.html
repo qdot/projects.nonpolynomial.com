@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Exercise Bike Nibbles Construction</title>
+<!-- 2013-06-04 Tue 21:38 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Kyle Machulis" />
+<meta  name="slug" content="exercise-bike-nibbles/exercise-bike-nibbles-article" />
+<meta  name="date" content="2005-05-15" />
+</head>
+<body>
+<div id="content">
+<h1 class="title">Exercise Bike Nibbles Construction</h1>
+
+<div class="figure">
+<p><img  src="enibbles.png" alt="enibbles.png" /></p>
+</div> 
+
+
+<div class="figure">
+<p><img  src="tv2.jpg" alt="tv2.jpg" /></p>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">About the Bike</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+I could just sum this section up in one phrase:
+</p>
+
+<p>
+"$99 at WalMart" 
+</p>
+
+<p>
+But, since I know I'm catering to a ridiculously technical audience,
+I'll flesh out the inner working of the bike a little more.
+</p>
+
+
+<div class="figure">
+<p><img  src="bike1.jpg" alt="bike1.jpg" /></p>
+</div>
+
+
+<div class="figure">
+<p><img  src="bike2.jpg" alt="bike2.jpg" /></p>
+</div>
+
+<p>
+The Stamina 4700R Silent Magnetic Recumbent Exercise Bike is a sexy
+little number that will have all the [insert opposite sex of reader,
+or same sex, or whatever the hell you kids are into these days]
+turning their heads from the second you get your big ol' ass on
+it. Featuring multiple resistence levels through its silent "Magnetic
+Resistance" feature (read: It's a screw with a magnet on it, for
+christ sake) and a start of the art LCD display, you can wash those
+pounds away in style on its "Match your crappy rental house carpet"
+beige frame.
+</p>
+
+<p>
+Note: All the pictures in this article kind of suck, because I could
+only get one pedal off of the bike, so I had to leave the other side
+of the bike on. Sure, I could've gone and gotten a wrench, but why do
+the job right in 3 minutes when you can half ass it now&#x2026;
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">How it works</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Well, for those of you that read the intro post to this project,
+you'll know that this all started when I discovered that there was a
+simple two pin connector hooking the LCD info screen into the
+mysterious inner workings of the bike.
+</p>
+
+<p>
+Yup, that's it right there. 
+</p>
+
+<p>
+So the spacing on those pins is just perfect for header! That means
+it's easy to craft a connection to my development board of choice, the
+<a href="http://www.charmedlabs.com">Charmed Labs Xport Board</a>. For this project, I also used the Xport
+Botball Controller, since it already had digital ports on it, which
+means I didn't have to code up the verilog myself.
+</p>
+
+<p>
+Anyways, I needed to figure out what was on the other side of those
+pins. Out comes the screwdriver! I took the bike apart, then left it
+for two weeks just to make The Woman angry. After I'd gotten bitched
+at to clean up my mess and put the bike back together enough times
+that I'd gotten sick of it, I finally got in and figured out what was
+making this encoder tick (heh.).
+</p>
+
+
+<div class="figure">
+<p><img  src="sensor.jpg" alt="sensor.jpg" /></p>
+</div>
+
+<p>
+Hey, that's a <a href="http://en.wikipedia.org/wiki/Hall_effect_sensor">Hall Effect Sensor</a>! With only one magnet, too! My god, those cheap bastards! 
+</p>
+
+<p>
+Here's how it works, in basic terms. There's a magnet attached to the
+wheel. When the magnet passes next to the wires, it creates a
+voltage. When the voltage is created, the rising edge considered to be
+one encoder tick, which activates the LCD screen if it's not already
+on. If it is already on, it calculates the time between the current
+tick and the last tick to tell you how fast you're going.
+</p>
+
+<p>
+So, every time the pedals on the bike make one full revolution, the
+magnet is guarenteed to pass by the sensor at least once. That's how
+it keeps distance and speed. Time is kept by an oscillator in the
+circuit, and viola, there's your cheapo information device!
+</p>
+
+<p>
+Time to scrap that piece of junk and put some REAL hardware on there. 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Bike Meets Xport</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Now comes the easy part, hooking the bike up to the Xport to make sure
+the sensor works!
+</p>
+
+<p>
+A converter was made to hook the bike sensor into the Xport. As can be
+seen in the picture, this connector enjoys good music.
+</p>
+
+
+<div class="figure">
+<p><img  src="converter.jpg" alt="converter.jpg" /></p>
+</div>
+
+<p>
+Sure enough, 0's on the screen when the magnet was far away, 1's when
+the magnet lined up perpendicularly to the sensor! We have connection!
+</p>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Getting time/distance info</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Now that we know the Xport works with the bike, we want to do the most
+basic of tests: Getting it to replicate what's going on in the LCD
+readout.
+</p>
+
+<p>
+First off, we need to figure out the velocity of one full revolution
+per second. Doing this by hand, I came up with around 11.2
+mph. However, it was fluctuating between 9.5 and 12, so the human
+factor was foobaring the whole experiment. Time to replace people with
+good ol' trusty electronics.
+</p>
+
+<p>
+All I needed to do was switch one of the digital inputs to output on
+the XBC, set a clock to fire an interrupt every second, and I could
+get the info I needed. 
+</p>
+
+
+<div class="figure">
+<p><img  src="speedtest.jpg" alt="speedtest.jpg" /></p>
+</div>
+
+<p>
+Well, I think the picture says it better than I could. I was pretty
+far off.
+</p>
+
+<p>
+So, just out of sheer curiosity, I decided to see what wheel size the
+bike was simulating.
+</p>
+
+<p>
+9.0 miles/hr at 1 tick (or full wheel revolution) per second.
+</p>
+
+<p>
+9mph * 5280f/m * 12i/f = 570240i/h / 3600s/h = 158.4i/s / pi = ~50.42 inch diameter wheel? 
+</p>
+
+<p>
+I'm just going to assume a ~25in wheel at ~2:1 gear ratio. Yeah. 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">Increasing encoder frequency, the ghetto way</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+So now we know that the bike will talk to the xport, and what speed we
+need to calculate for using the bike, we're pretty much done in terms
+of simulation.
+</p>
+
+<p>
+But what about the important part, <span class="underline">games!</span>
+</p>
+
+<p>
+One tick per rotation isn't going to be nearly enough to support
+control for a game, as you really can't get higher than 2-3 ticks per
+second, and that's if you're really working at it. So, we need to add
+more encoder ticks to the system. How? More magnets!
+</p>
+
+
+<div class="figure">
+<p><img  src="magnet.jpg" alt="magnet.jpg" /></p>
+</div>
+
+<p>
+Now, I've done some serious ghetto rigging on projects, but electrical
+taping magnets to the flywheel of an already ghetto exercise bike?
+That's just something special right there.
+</p>
+
+<p>
+You're going to need fairly strong magnets in order to get this to
+work, due to the distance of the wheel from the sensor. I went down to
+the local hardware store and get some ceramic magnets, shattered them
+with a hammer (why I didn't take pictures of this, I don't know,
+'cause it was FREAKIN' AWESOME), and a taped them into the inside of
+the wheel. Soon, I was getting 10 ticks per revolution instead of 1!
+Still not my ideal (I'd love to have around 100 or so), but it works
+for the moment.
+</p>
+
+<p>
+That's it! This bike is ready to go! 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">The Game</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Woohoo, finally, some software to go with our hardware! Now that we've
+got the bike hooked up, it's time to make it do something not
+bikey. Controlling video games seems like a good first
+project. Everyone loves video games!
+</p>
+
+<p>
+So, what game to make? Well, first off, we wanted something simple,
+since this is a tutorial. The first idea was Tron Light Cycles,
+'cause, well, exercise bike, light cycles, you get it. Unfortunatly,
+we only have one bike to work on right now, meaning we'd either have
+to program AI or else add outside buttons for a second player. Neither
+of these is a problem, but why go with the cool game when you can go
+with the easy one?
+</p>
+
+<p>
+Nibbles it is. 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">How to play</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+I really shouldn't have to be writing this section, but for all of you
+that haven't played nibbles, GET WITH THE GOD DAMN TIMES ALREADY! Do
+you not own a cell phone or something? Good god!
+</p>
+
+<p>
+You are a snake. A red snake. A red snake that likes green
+blocks. Green blocks are yummy, and you like to eat them, or at least,
+run head on into them. The more blocks you run into, the bigger you
+get. However, run into the wall or yourself, and you die. Easy enough,
+eh?
+</p>
+
+<p>
+Now, there's one difference between normal nibbles and this
+version. This of this as Speed (like the movie) Nibbles. If you slow
+down below a certain velocity, the snake starts to fade out. If you
+stay below this velocity for more than a second, the game is
+over. Better keep pedaling!
+</p>
+
+<p>
+This game uses 2 buttons, turn right and turn left. Since you've
+already gotta concentrate on hitting green blocks and pedaling at the
+same time, it seemed easier than trying to use a 4 direction setup.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">Control mechanisms</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+The issue of control while using a recumbent is difficult. Due to the
+fact that the GBA/DS + Xport/XRC/XBC setup can be a little weighty,
+plus having multiple wires coming off of it in every direction,
+getting things tangled up is something that needs to be taken into
+consideration.
+</p>
+
+<p>
+There's a couple of different ways you can choose to control the
+game. Both of these should keep things relatively clean and happy. One
+takes programming (but is cheap), the other requires around $200 worth
+of hardware, but it's stuff you probably already have.
+</p>
+
+<p>
+The Expensive Way: 
+</p>
+
+<p>
+Parts: 
+</p>
+
+<ul class="org-ul">
+<li>Nintendo Gamecube
+</li>
+<li>Nintendo Gamecube GBA Player
+</li>
+<li>TV
+</li>
+<li>Wavebird Controller (Optional, but prefered)
+</li>
+</ul>
+
+
+<div class="figure">
+<p><img  src="tv1.jpg" alt="tv1.jpg" /></p>
+</div>
+
+<p>
+After the parts list, it should be fairly obvious what's going on
+here. Just set up the Xport in the Gamecube, and use the Wavebird to
+play. This is the way we are planning on doing most of our projects
+before we move to writing DS software, as it provides a much larger
+screen, with no controller wires.
+</p>
+
+<p>
+The Cheap Way: 
+</p>
+
+<p>
+Parts: 
+</p>
+
+<ul class="org-ul">
+<li>Buttons/Touch Sensors/Lever Sensors
+</li>
+<li>Tape
+</li>
+<li>Wire
+</li>
+</ul>
+
+<p>
+All you'll need is a couple of touch sensors, and a ton of wire to
+connect to the DS. For the exercise bike we used, there were two
+handles on the side. We just taped the touch sensors to each handle,
+and wired it down the bike so that it wouldn't get caught in the
+pedals. Viola, on bike controls! This also means you can use a GBA/DS
+mounted to the bike for display.
+</p>
+
+
+<div class="figure">
+<p><img  src="touch1.jpg" alt="touch1.jpg" /></p>
+</div>
+
+
+<div class="figure">
+<p><img  src="touch2.jpg" alt="touch2.jpg" /></p>
+</div>
+
+<p>
+On the programming side, I recommend checking out the CBtnState class
+in libgba in the Xport Toolchain (which is a pretty much straight copy
+of the way buttons are handled in the <a href="http://user.chem.tue.nl/jakvijn/tonc/">TONC tutorials</a>), and
+implementing something similar for the GPIO pins. This is left as an
+exercise for the reader, 'cause we didn't think of this until after we
+were pretty much done with the project.
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

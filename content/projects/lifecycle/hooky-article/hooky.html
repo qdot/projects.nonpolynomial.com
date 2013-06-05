@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Hooky: Input Injection in Second Life</title>
+<!-- 2013-06-04 Tue 21:38 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Kyle Machulis" />
+<meta  name="slug" content="lifecycle/hooky-article" />
+<meta  name="date" content="2005-10-15" />
+</head>
+<body>
+<div id="content">
+<h1 class="title">Hooky: Input Injection in Second Life</h1>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Hooky: Input Injection in Second Life</h2>
+<div class="outline-text-2" id="text-1">
+
+<div class="figure">
+<p><img  src="hooky-images/hookyintro.jpg" alt="hookyintro.jpg" /></p>
+</div> 
+
+<p>
+Thanks to Cubey Terra for helping out on this project 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Breaking Barriers</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Second Life comes with 2 control mechanisms; keyboard and
+mouse. There's very little problem getting around in the world with
+these two methods. However, at Nonpolynomial Labs we believe that
+input can be as much part of the world as the client itself. Out of
+that idea grew Hooky, an input injector for Second Life.
+</p>
+
+<p>
+Input injection is a way of simulating input without actually having
+the user type on the keyboard, move the mouse, or physically change
+the input state in some way. By sending special messages to the
+operating system, a program can fool another program into thinking
+that there is input coming from the keyboard, mouse, or other
+devices. Using this method, we can have any device (in this case, a
+joystick) generate keystrokes, allowing us to control Second Life
+through whatever mechanism we choose.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">The Life of a Keypress</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+To start, let's go through how input gets from a device to the
+computer. For this example, we'll use the keyboard.
+</p>
+
+
+<div class="figure">
+<p><img  src="hooky-images/hookyexp1.jpg" alt="hookyexp1.jpg" /></p>
+</div> 
+
+<p>
+The life of a keystroke begins when a key is pressed on the
+keyboard. This sends a signal to the circuitry in the keyboard that
+makes it generate what is known as a scan code. Scan codes refer to
+which button was pressed, and can different from keyboard to
+keyboard. Microsoft keyboards might send different scan codes than
+belkin keyboards, Cyrillic character scan codes may be different than
+Roman, etc&#x2026;
+</p>
+
+<p>
+Once the scan code makes it to the computer, it's picked up by the CPU
+as an interrupt request. This means that the CPU stops for a bit (a
+very, very, very short bit) and routes the scan code to where it needs
+to go. This will most likley be somewhere in the computer's
+memory. Then the operating system takes over.
+</p>
+
+<p>
+For this article, we'll be talking about how the Microsoft Windows
+operating system deals with scan codes (though the explanation is
+general enough to be applied to most systems). After the interrupt is
+triggered, the OS takes the scan code and runs it through a look up
+table in the keyboard's driver. This tells it what key the scan code
+refers to (i.e. 'a', '1', shift, esc, etc&#x2026;). It then routes that key
+to the application that currently has control of the keyboard. That
+application is then responsible for making the initial key stroke into
+functional output.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Hooks and Injections</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+There are ways of watching and inserting new information into the scan
+code queue that will allow developers to do special things with the
+operating system and applications running on it. These are known as
+system hooks.
+</p>
+
+<p>
+Hooks allow an application to watch over the queue of input coming
+into the operating system, before it has turned the input into
+messages and sent them off to their application destination. This is
+how most HotKey and Macro programs work. The hooking application
+watches the queue for certain key combinations, and removes and
+executes them if they correspond to a certain key combo
+(i.e. control+space to bring up programs like AppRocket/QuickSilver).
+</p>
+
+<p>
+Injecting input happens before the scan code is converted. Instead of
+taking the scan codes typed in through a real keyboard, a program can
+send virtual scan codes through the "Virtual Keyboard", which will be
+interpreted as real keystrokes. Using this method, we can convert any
+sort of input into a keystroke.
+</p>
+
+<p>
+These ideas can be combined to make many neat applications. One of the
+more widely used applications that executes on this idea is <a href="http://code.google.com/p/synergy-plus/">Synergy</a>, a
+utility that allows a keyboard and mouse on one machine to be used
+across many networked machines. The machine with the mouse and
+keyboard physically hooked up is the server. The server watches the
+input queue through hooks, and relays the input over the network to
+other computers running network clients. These clients take the
+information sent by the server and turn it into input injections,
+effectively moving the input made on one machine to another.
+</p>
+
+
+<div class="figure">
+<p><img  src="hooky-images/hookyexp2.jpg" alt="hookyexp2.jpg" /></p>
+</div> 
+
+<p>
+In Hooky, we use a combination of hooks and injections in order to
+control Second Life through whatever means we please. Since these are
+already features of the operating system, this is not considered
+hacking the client. There are many programs on the market already that
+have these features (such as Synergy, which you can use to play SL on
+an alternate machine), so we are essentially recreating a wheel with
+this project. However, it's a very specialized, squareish wheel.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">Joystick to Keyboard</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Though many things can be done with this method of input overriding,
+our demo program will show to control avatar movements and control
+overrides of vehicles on a Windows system with DirectX installed. A
+Mac version of the program will be available soon (as my only access
+to a Mac is at work).
+</p>
+
+<p>
+For our explanation here, we'll be using the DirectInput system to
+take joystick input. We are using a Xbox S-Controller with USB
+modified plug and redcl0ud drivers. Drivers, source code, and
+modification instructions can be downloaded at
+<a href="http://www.redcl0ud.com/xbcd.html">http://www.redcl0ud.com/xbcd.html</a>. On this controller, we have two
+kinds of joysticks: an 8-way directional pad, and analog sticks. Each
+of these gives the user a different level of control, at an additional
+level of complexity for the analog stick.
+</p>
+
+<p>
+We will refer to two different types of control. 
+</p>
+
+<ul class="org-ul">
+<li>Digital - A direction is in either an On or Off state. Second Life
+control through the keyboard works on a digital mechanism, i.e. you
+are by default either going forward or backward, left or right at a
+constant speed, with no way to change the speed based on input
+metrics like how hard or how many times you are pressing the
+movement key.
+</li>
+<li>Analog - A direction is capable of a continuous range of states,
+clamped by the analog to digitial converter that it is translated
+through. This is how many control games work, i.e. turning while
+driving with an analog stick will ramp angular velocity depending on
+the position of the analog stick relative to center, versus the
+"going left" or "going straight" choices that a digital control
+would give
+</li>
+</ul>
+
+<p>
+The fact that there is no built-in analog control method in the Second
+Life client means that we are required to make our own analog
+processing system, which we will describe later in the article.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">Digital Control Methods</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+With digital control, all we need to do is directly map the state of
+the controller to the input for the game. This is done by statically
+mapping the control axises in the same terms that the LSL control
+state uses. We will send key down messages on direction press, and key
+up messages on direction release. That way, the Second Life client
+will consider the corresponding direction key pressed for as long as
+we are in the correct joystick input state.
+</p>
+
+<p>
+For physical control, we can use either the analog stick, or the
+digital pad. The digital pad will simply give us back zero or the
+maximum range on the specified axis when we query it. For the analog
+pad, we need to create a threshold value so that when the stick is
+pushed beyond a certain point, it registers as a direction. Setting
+the threshold value to 3/4th of the maximum movable range is usually a
+safe bet.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">Analog Control Methods</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Analog control is a little harder to do in Second Life, due to the
+fact that there isn't any direct in-world analog control outside of
+mouselook, which is hard to deal with for input injection. We have two
+alternatives, injecting commands into a vehicle through chat, or pulse
+width modulation.
+</p>
+
+<p>
+Injecting commands through chat is simple, through the lag associated
+with parsing chat commands will cause the latency for this method to
+be fairly high. It also requires that a vehicle be able to parse
+specialized commands, meaning that users will need modification rights
+on the object scripts. This is not usually available. However, we will
+cover the basics of the method just to give an idea of how it would
+work.
+</p>
+
+<p>
+Instead of simply sending the keypresses to Second Life, we will now
+need to send full commands. For instance, a standard method would be
+to send a string formatted as a LSL vector type (i.e. &lt;x,y,z&gt; with all
+3 axes being floats). This vector will represent the x and y
+coordinates of the stick, as well as the z axis velocity, assuming it
+is mapped on the controller. This string could be cast directly to a
+vector in the LSL listen function, which could then be fed into the
+kinematics generation function for the vehicle to calculate the proper
+velocity.
+</p>
+
+<p>
+There is a more interesting and accurate way to relay analog control
+using a joystick. First off, thanks to Cubey Terra for this
+idea. Without it, we would've been stuck using unreliable listens.
+</p>
+
+<p>
+To give SL the sembelance of analog control, we can use a type of
+pulse width modulation to send key down and key release messages. To
+translate, this means that depending on how far the stick is pushed in
+a direction, we can vary the amount of time the key is being
+represented as pushed by the program. For example, say the stick is
+pushed 25% of the range in the up direction. The up key message would
+then be sent for 25% of every second. If the stick was pushed 100% of
+the way up, it would send the up message constantly. By varying the
+amount we keep the key pressed (or the width of the "pulse" that the
+key sends), the program will be controlled accordingly.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">Source Code Explanation</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Feel free to skip this section if you don't particularly care about
+the specific code implementation.
+</p>
+
+
+<div class="figure">
+<p><img  src="hooky-images/hookygui.jpg" alt="hookygui.jpg" /></p>
+</div> 
+
+<p>
+The Hooky Client is written in C# with P/Invoke commands to access the
+low level C based Win32 calls. When the client boots, the first task
+is to choose a proper DirectInput capable controller. The Mouse and
+Keyboard are valid, but we expect users will be using a
+joystick. After an input type is selected, the user can scan the
+current list of threads to see if Second Life is open. This is done by
+retrieving the window name of the thread. We realize this will not
+work with the current beta version of Second Life, as it has a window
+title of Second Life Siva. In a later version, users will be able to
+choose the thread by hand, with recommended threads showing at the top
+of the list.
+</p>
+
+<p>
+After the thread is chosen, the thread ID is retrieved and stored in
+the program. The user is now ready to hook into the application. When
+the "Hook To Thread" box is checked, a Timer loop is started to create
+the input pooling loop. We run this loop at 60hz, as the input update
+frequency for the SL client is unknown, and this seemed like a decent
+guess.
+</p>
+
+<p>
+In each run of the update loop, the controller is checked for two
+different types of input: analog from the analog stick, and digital
+from the 8 way directional pad, using the algorithms described
+above. When a keydown or keyup event is relayed, SetForegroundWindow
+is called on the Second Life window handle to make sure we are
+filtering the commands to the correct application. After this, we call
+the SendInput command with the virtual key scan code of the direction
+we want to go, with either a key down state or a key up state.
+</p>
+
+<p>
+This loop is run until the "Hook To Thread" box is unchecked, which
+stops the timer.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9">Ideas for Use and Future Plans</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+The uses for a program like this are endless. Voice recognition could
+be hooked up to control the GUI and world through speech. Users could
+build new controllers (such as exercise bikes, in our case) to move
+through the world in interesting ways. Anti-Idle programs could be
+written. The limits are only up to developers.
+</p>
+
+<p>
+Our plans are to extend the interface to make it easier for
+non-programmers to use. Right now, creating new control bindings
+requires that the code be changed and recompiled. We plan on adding a
+mapping GUI so that users can define key maps, timing changes, and
+other customizations to work with their own projects.
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>
